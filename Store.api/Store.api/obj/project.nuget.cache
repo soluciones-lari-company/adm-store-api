@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "5pBCF4bl5pCyGXyV1Qj4F0/xfHixA2knt7c6IpsSW2/34bj+s6VURiwhAgu2VmIUTlug0h3L7cX28MRWr/vQaA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -3,3 +3,11 @@
 ################################################################################
 
 /.vs
+/Store.api/.vs
+/Store.api/Store.AccessData/obj
+/Store.api/Store.Service/obj
+/Store.api/Store.Models/obj
+/Store.api/Store.DataBase/bin/Debug
+/Store.api/Store.DataBase/obj/Debug
+/Store.api/Store.DataBase/Store.DataBase.jfm
+/Store.api/Store.DataBase/Store.DataBase.dbmdl
