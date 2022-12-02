@@ -4,14 +4,14 @@
     "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj": {
+    "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj",
-        "projectName": "Store.api",
-        "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj",
+        "projectUniqueName": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj",
+        "projectName": "Store.AccessData",
+        "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj",
         "packagesPath": "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\obj\\",
+        "outputPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,6 +44,110 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj",
+        "projectName": "Store.api",
+        "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\Store.api.csproj",
+        "packagesPath": "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.api\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\luis.angel.martinez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj": {
+                "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj"
+              },
+              "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj": {
+                "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj"
+              },
+              "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Service\\Store.Service.csproj": {
+                "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Service\\Store.Service.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
@@ -63,6 +167,128 @@
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
             },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj",
+        "projectName": "Store.Models",
+        "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj",
+        "packagesPath": "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\luis.angel.martinez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Service\\Store.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Service\\Store.Service.csproj",
+        "projectName": "Store.Service",
+        "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Service\\Store.Service.csproj",
+        "packagesPath": "C:\\Users\\luis.angel.martinez\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Service\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\luis.angel.martinez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

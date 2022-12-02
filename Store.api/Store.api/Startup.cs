@@ -1,16 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Store.AccessData;
+using Store.Service;
 
 namespace Store.api
 {
@@ -26,7 +22,24 @@ namespace Store.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://example.com",
+                                                          "http://localhost:3000", "*").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                                  });
+            });
+            services
+                .RegisterServices()
+                .RegisterDataAccess(Configuration)
+                .AddTransient(typeof(ILogger<>), typeof(Logger<>))
+                .Configure<IISServerOptions>(options =>
+                {
+                    options.AllowSynchronousIO = true;
+                })
+                .AddControllers();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -43,9 +56,15 @@ namespace Store.api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Store.api v1"));
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
+            app.UseCors("_myAllowSpecificOrigins");
             app.UseRouting();
 
             app.UseAuthorization();
