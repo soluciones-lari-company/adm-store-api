@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using Store.AccessData.Interfaces;
+using Store.AccessData.Repositories;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Store.AccessData
@@ -15,6 +12,13 @@ namespace Store.AccessData
     {
         public static IServiceCollection RegisterDataAccess(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<IPurchaseOrderItemRepository, PurchaseOrderItemRepository>();
+
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<ISalesOrderRepository, SalesOrderRepository>();
+            services.AddTransient<ISalesOrderItemRepository, SalesOrderItemRepository>();
+            services.AddTransient<IBussinesAccountRepository, BussinesAccountRepository>();
+
 
             services.AddDbContext<StoreDC>(options =>
                 options.UseSqlServer(configuration["ConnectionStrings:default"], o => o.EnableRetryOnFailure()));
