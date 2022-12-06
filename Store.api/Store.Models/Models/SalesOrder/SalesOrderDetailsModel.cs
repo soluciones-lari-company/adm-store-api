@@ -8,7 +8,7 @@ namespace Store.Models.Models.SalesOrder
     {
         public int Customer { get; set; }
         public DateTime DocDate { get; set; }
-        public int DocType { get; set; }
+        public string PaymentMethod { get; set; }
         public decimal DocTotal { get; set; }
         public string DocStatus { get; set; } = null!;
     }
@@ -18,7 +18,6 @@ namespace Store.Models.Models.SalesOrder
         public int DocNum { get; set; }
         public Customer.CustomerDetailsModel Customer { get; set; } = null!;
         public DateTime DocDate { get; set; }
-        public int DocType { get; set; }
         public decimal DocTotal { get; set; }
         public string DocStatus { get; set; } = null!;
         public bool Canceled { get; set; }
@@ -40,7 +39,6 @@ namespace Store.Models.Models.SalesOrder
         public int DocNum { get; set; }
         public int Customer { get; set; }
         public DateTime DocDate { get; set; }
-        public int DocType { get; set; }
         public decimal DocTotal { get; set; }
         public string DocStatus { get; set; } = null!;
         public bool Canceled { get; set; }

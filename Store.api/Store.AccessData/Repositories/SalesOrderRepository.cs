@@ -19,14 +19,19 @@ namespace Store.AccessData.Repositories
         {
             _storeCtx = storeCtx;
         }
+
+        public async Task ChangePaymentMethodAsync(int docNum, string paymentMethod)
+        {
+            var orderRegistered = await GetAsync(docNum).ConfigureAwait(false);
+            orderRegistered.MethodPayment = paymentMethod;
+            orderRegistered.UpdatedAt = DateTime.Now;
+
+            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         public async Task ChangeStatusAsync(int docNum, string status)
         {
-            var orderRegistered = await _storeCtx.SalesOrders.FirstOrDefaultAsync(customer => customer.DocNum == docNum).ConfigureAwait(false);
-
-            if (orderRegistered == null)
-            {
-                throw new NullReferenceException(nameof(orderRegistered));
-            }
+            var orderRegistered = await GetAsync(docNum).ConfigureAwait(false);
 
             orderRegistered.DocStatus = status;
             orderRegistered.UpdatedAt = DateTime.Now;
@@ -34,7 +39,7 @@ namespace Store.AccessData.Repositories
             await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<int> CreateAsync(int customerNumber, DateTime docDate, int docType, string docStatus, string methodPayment)
+        public async Task<int> CreateAsync(int customerNumber, DateTime docDate, string docStatus, string methodPayment)
         {
             var newSalesOrder = new SalesOrder
             {
@@ -223,6 +228,16 @@ namespace Store.AccessData.Repositories
 
         public async Task UpdateTotalAsync(int docNum)
         {
+            var orderRegistered = await GetAsync(docNum).ConfigureAwait(false);
+
+            orderRegistered.DocTotal = await _storeCtx.SalesOrderItems.Where(line => line.DocNum == docNum).SumAsync(line => line.Total).ConfigureAwait(false);
+            orderRegistered.UpdatedAt = DateTime.Now;
+
+            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        private async Task<SalesOrder> GetAsync(int docNum)
+        {
             var orderRegistered = await _storeCtx.SalesOrders.FirstOrDefaultAsync(customer => customer.DocNum == docNum).ConfigureAwait(false);
 
             if (orderRegistered == null)
@@ -230,10 +245,7 @@ namespace Store.AccessData.Repositories
                 throw new NullReferenceException(nameof(orderRegistered));
             }
 
-            orderRegistered.DocTotal = await _storeCtx.SalesOrderItems.Where(line => line.DocNum == docNum).SumAsync(line => line.Total).ConfigureAwait(false);
-            orderRegistered.UpdatedAt = DateTime.Now;
-
-            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
+            return orderRegistered;
         }
     }
 }

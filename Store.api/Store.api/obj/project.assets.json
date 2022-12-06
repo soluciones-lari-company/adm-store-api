@@ -1613,7 +1613,9 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
+          "Store.AccessData": "1.0.0",
+          "Store.Models": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Store.Service.dll": {}

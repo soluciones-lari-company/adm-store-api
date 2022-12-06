@@ -14,3 +14,6 @@
 /Store.api/Store.AccessData/bin/Debug/net5.0
 /Store.api/Store.api/bin/Debug/net5.0
 /Store.api/Store.Service/bin/Debug/net5.0
+/Store.api/Store.api/bin/Release/net5.0
+/Store.api/Store.AccessData/bin/Release/net5.0
+/Store.api/Store.Service/bin/Release/net5.0

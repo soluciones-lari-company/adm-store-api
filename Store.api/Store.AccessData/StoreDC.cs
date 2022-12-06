@@ -56,6 +56,8 @@ namespace Store.AccessData
                     .IsRequired()
                     .HasMaxLength(200);
 
+                entity.Property(e => e.DefaultAccount).HasColumnName("defaultAccount");
+
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             });
 

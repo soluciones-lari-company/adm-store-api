@@ -10,6 +10,8 @@ namespace Store.AccessData.Interfaces
     {
         public Task<int> CreateAsync(string name, string comments);
         public Task<BussinesAccountDetailsModel> DetailsAsync(int idBussinesAccount);
+        public void SetAsDefault(int idBussinesAccount, bool isDefault);
+        public Task<List<BussinesAccountDetailsModel>> GetAsDefault();
         public Task<List<BussinesAccountDetailsModel>> ListAsync();
         public Task<int> UpdateAsync(int idBussinesAccount, string name, string comments);
         public Task AddHistoryLine(int idBussinesAccount, decimal total, BussinesAccountHistoryType historyType, BussinesAccountDocRefType docRefType, int docRefNum, string comments);

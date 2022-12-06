@@ -264,7 +264,14 @@
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj": {
+                "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.AccessData\\Store.AccessData.csproj"
+              },
+              "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj": {
+                "projectPath": "C:\\Users\\luis.angel.martinez\\source\\repos\\soluciones-lari-company\\adm-store-api\\Store.api\\Store.Models\\Store.Models.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

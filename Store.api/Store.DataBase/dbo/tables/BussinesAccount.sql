@@ -4,6 +4,7 @@
 	AccountName nvarchar(150) not null,
 	Balance decimal(10,2) not null,
 	Comments nvarchar(max) null,
+	defaultAccount bit not null default 0,
 	CreatedBy nvarchar(200) not null,
 	CreatedAt datetime not null,
 	UpdatedAt datetime not null,

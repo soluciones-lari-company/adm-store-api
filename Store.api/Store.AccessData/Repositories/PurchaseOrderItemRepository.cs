@@ -22,7 +22,7 @@ namespace Store.AccessData.Repositories
         public async Task<PurchaseOrderItemDetailsModel> DetailsAsync(string itemCode)
         {
             var qr_detailsItem = from items in _storeCtx.PurchaseOrderItems
-                                 where items.Reference1 == itemCode
+                                 where items.ItemCode == itemCode
                                  select new PurchaseOrderItemDetailsModel
                                  {
                                      DescriptionItem = items.DescriptionItem,
@@ -48,7 +48,7 @@ namespace Store.AccessData.Repositories
 
         public void MoveToStolenAsync(string itemCode, bool isStolen)
         {
-            var ItemDetails = _storeCtx.PurchaseOrderItems.FirstOrDefault(item => item.Reference1 == itemCode);
+            var ItemDetails = _storeCtx.PurchaseOrderItems.FirstOrDefault(item => item.ItemCode == itemCode);
 
             if (ItemDetails == null)
             {

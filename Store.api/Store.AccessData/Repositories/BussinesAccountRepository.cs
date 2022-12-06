@@ -103,12 +103,7 @@ namespace Store.AccessData.Repositories
 
         public async Task<int> UpdateAsync(int idBussinesAccount, string name, string comments)
         {
-            var bussinesAccountRegistered = await _storeCtx.BussinesAccounts.FirstOrDefaultAsync(account => account.Id == idBussinesAccount).ConfigureAwait(false);
-
-            if (bussinesAccountRegistered == null)
-            {
-                throw new NullReferenceException(nameof(bussinesAccountRegistered));
-            }
+            var bussinesAccountRegistered = Get(idBussinesAccount);
 
             bussinesAccountRegistered.AccountName = name;
             bussinesAccountRegistered.Comments = comments;
@@ -156,6 +151,42 @@ namespace Store.AccessData.Repositories
                                     };
 
             return await qr_detailsAccount.FirstOrDefaultAsync().ConfigureAwait(false);
+        }
+
+        public void SetAsDefault(int idBussinesAccount, bool isDefault)
+        {
+            var bussinesAccountRegistered = Get(idBussinesAccount);
+            bussinesAccountRegistered.DefaultAccount = isDefault;
+            _storeCtx.SaveChanges();
+        }
+
+        public async Task<List<BussinesAccountDetailsModel>> GetAsDefault()
+        {
+            var qr_bussinesAccount = from account in _storeCtx.BussinesAccounts where account.DefaultAccount == true
+                                     select new BussinesAccountDetailsModel
+                                     {
+                                         Id = account.Id,
+                                         AccountName = account.AccountName,
+                                         Balance = account.Balance,
+                                         Comments = account.Comments,
+                                         CreatedBy = account.CreatedBy,
+                                         CreatedAt = account.CreatedAt,
+                                         UpdatedAt = account.UpdatedAt,
+                                     };
+
+            return await qr_bussinesAccount.ToListAsync().ConfigureAwait(false);
+        }
+
+        private BussinesAccount Get(int idBussinesAccount)
+        {
+            var bussinesAccountRegistered = _storeCtx.BussinesAccounts.FirstOrDefault(account => account.Id == idBussinesAccount);
+
+            if (bussinesAccountRegistered == null)
+            {
+                throw new NullReferenceException(nameof(bussinesAccountRegistered));
+            }
+
+            return bussinesAccountRegistered;
         }
     }
 }
