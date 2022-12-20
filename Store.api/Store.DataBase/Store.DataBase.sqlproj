@@ -69,6 +69,7 @@
     <Build Include="dbo\tables\SalesOrderItem.sql" />
     <Build Include="dbo\tables\BussinesAccount.sql" />
     <Build Include="dbo\tables\BussinesAccountHistory.sql" />
+    <Build Include="dbo\tables\IncommingPayment.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeploy\PopulateTables.sql" />

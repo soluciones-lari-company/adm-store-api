@@ -20,13 +20,13 @@ namespace Store.AccessData.Interfaces
 
     internal enum BussinesAccountHistoryType
     {
-        entrada,
-        salida
+        entrada = 1,
+        salida = 2
     }
 
     internal enum BussinesAccountDocRefType
     {
-        incommingPayment,
-        outCommingPayment
+        incommingPayment = 1,
+        outCommingPayment = 2
     }
 }

@@ -21,6 +21,7 @@ namespace Store.AccessData
         public virtual DbSet<BussinesAccount> BussinesAccounts { get; set; }
         public virtual DbSet<BussinesAccountHistory> BussinesAccountHistories { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<IncommingPayment> IncommingPayments { get; set; }
         public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
         public virtual DbSet<SalesOrder> SalesOrders { get; set; }
@@ -104,6 +105,46 @@ namespace Store.AccessData
                     .HasMaxLength(15);
 
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<IncommingPayment>(entity =>
+            {
+                entity.ToTable("IncommingPayment");
+
+                entity.Property(e => e.Canceled).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.CanceledBy).HasMaxLength(200);
+
+                entity.Property(e => e.CanceledDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.PaymentDate).HasColumnType("date");
+
+                entity.Property(e => e.Total).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+                entity.HasOne(d => d.BussinesAccountNavigation)
+                    .WithMany(p => p.IncommingPayments)
+                    .HasForeignKey(d => d.BussinesAccount)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Incomming__Bussi__5FB337D6");
+
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.IncommingPayments)
+                    .HasForeignKey(d => d.Customer)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Incomming__Custo__5DCAEF64");
+
+                entity.HasOne(d => d.DocNumNavigation)
+                    .WithMany(p => p.IncommingPayments)
+                    .HasForeignKey(d => d.DocNum)
+                    .HasConstraintName("FK__Incomming__DocNu__5EBF139D");
             });
 
             modelBuilder.Entity<PurchaseOrder>(entity =>

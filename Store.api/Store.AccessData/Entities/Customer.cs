@@ -9,6 +9,7 @@ namespace Store.AccessData.Entities
     {
         public Customer()
         {
+            IncommingPayments = new HashSet<IncommingPayment>();
             SalesOrders = new HashSet<SalesOrder>();
         }
 
@@ -23,6 +24,7 @@ namespace Store.AccessData.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public virtual ICollection<IncommingPayment> IncommingPayments { get; set; }
         public virtual ICollection<SalesOrder> SalesOrders { get; set; }
     }
 }

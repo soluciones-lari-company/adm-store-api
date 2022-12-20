@@ -7,6 +7,11 @@ namespace Store.AccessData.Entities
 {
     public partial class BussinesAccount
     {
+        public BussinesAccount()
+        {
+            IncommingPayments = new HashSet<IncommingPayment>();
+        }
+
         public int Id { get; set; }
         public string AccountName { get; set; }
         public decimal Balance { get; set; }
@@ -15,5 +20,7 @@ namespace Store.AccessData.Entities
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public virtual ICollection<IncommingPayment> IncommingPayments { get; set; }
     }
 }

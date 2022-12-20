@@ -18,6 +18,7 @@ namespace Store.AccessData
             services.AddTransient<ISalesOrderRepository, SalesOrderRepository>();
             services.AddTransient<ISalesOrderItemRepository, SalesOrderItemRepository>();
             services.AddTransient<IBussinesAccountRepository, BussinesAccountRepository>();
+            services.AddTransient<IIncomingPaymentRepository, IncomingPaymentRepository>();
 
 
             services.AddDbContext<StoreDC>(options =>

@@ -18,18 +18,21 @@ namespace Store.Service.Services
         private readonly ISalesOrderItemRepository _salesOrderItemRepository;
         private readonly ISalesOrderRepository _salesOrderRepository;
         private readonly IPurchaseOrderItemRepository _purchaseOrderRepository;
+        private readonly IBussinesAccountRepository _bussinesAccountRepository;
 
         public SalesOrderService(ICustomerRepository customerRepository,
             ILogger<SalesOrderService> logger,
             ISalesOrderItemRepository salesOrderItemRepository,
             ISalesOrderRepository salesOrderRepository,
-            IPurchaseOrderItemRepository purchaseOrderRepository)
+            IPurchaseOrderItemRepository purchaseOrderRepository,
+            IBussinesAccountRepository bussinesAccountRepository)
         {
             _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _salesOrderItemRepository = salesOrderItemRepository ?? throw new ArgumentNullException(nameof(salesOrderItemRepository));
             _salesOrderRepository = salesOrderRepository ?? throw new ArgumentNullException(nameof(salesOrderRepository));
             _purchaseOrderRepository = purchaseOrderRepository ?? throw new ArgumentNullException(nameof(purchaseOrderRepository));
+            _bussinesAccountRepository = bussinesAccountRepository ?? throw new ArgumentNullException(nameof(bussinesAccountRepository));
         }
 
         public async Task<int> CreateAsync(SalesOrderCreateModel salesOrderCreate)
@@ -106,8 +109,12 @@ namespace Store.Service.Services
             await _salesOrderRepository.ChangeStatusAsync(docNum, "F").ConfigureAwait(false);
             await _salesOrderRepository.ChangePaymentMethodAsync(docNum, paymentMethod).ConfigureAwait(false);
 
+            //var listDefaultAccount = await _bussinesAccountRepository.GetAsDefault().ConfigureAwait(false);
+            //int idAccountDefaultForPayments = 
+            //if(listDefaultAccount.Count == 0)
+            //{
 
-
+            //}
         }
 
         public async Task DeleteLine(int docNum, string itemCode)
