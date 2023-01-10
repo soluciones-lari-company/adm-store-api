@@ -60,18 +60,4 @@
     <Folder Include="dbo\tables" />
     <Folder Include="PostDeploy" />
   </ItemGroup>
-  <ItemGroup>
-    <Build Include="dbo\tables\Supplier.sql" />
-    <Build Include="dbo\tables\PurchaseOrder.sql" />
-    <Build Include="dbo\tables\PurchaseOrderItem.sql" />
-    <Build Include="dbo\tables\Customer.sql" />
-    <Build Include="dbo\tables\SalesOrder.sql" />
-    <Build Include="dbo\tables\SalesOrderItem.sql" />
-    <Build Include="dbo\tables\BussinesAccount.sql" />
-    <Build Include="dbo\tables\BussinesAccountHistory.sql" />
-    <Build Include="dbo\tables\IncommingPayment.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="PostDeploy\PopulateTables.sql" />
-  </ItemGroup>
 </Project>
