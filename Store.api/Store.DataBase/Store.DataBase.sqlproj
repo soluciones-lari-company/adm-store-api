@@ -60,4 +60,9 @@
     <Folder Include="dbo\tables" />
     <Folder Include="PostDeploy" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\tables\Supplier.sql" />
+    <Build Include="dbo\tables\Purchase.sql" />
+    <Build Include="dbo\tables\PurchaseItem.sql" />
+  </ItemGroup>
 </Project>
