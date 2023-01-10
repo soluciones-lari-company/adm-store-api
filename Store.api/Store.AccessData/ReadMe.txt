@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext "Server=(localdb)\MSSQLLocalDB;Database=galastore;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entities -Context StoreDC -ContextDir "./" -Force

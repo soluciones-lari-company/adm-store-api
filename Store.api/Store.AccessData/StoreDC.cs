@@ -32,7 +32,6 @@ namespace Store.AccessData
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=galastore;Trusted_Connection=True;");
             }
         }
@@ -66,6 +65,8 @@ namespace Store.AccessData
             {
                 entity.ToTable("BussinesAccountHistory");
 
+                entity.Property(e => e.Cancel).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
                 entity.Property(e => e.CreatedBy)
@@ -82,6 +83,12 @@ namespace Store.AccessData
                 entity.Property(e => e.Total).HasColumnType("decimal(10, 2)");
 
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+                entity.HasOne(d => d.BussinesAccountNavigation)
+                    .WithMany(p => p.BussinesAccountHistories)
+                    .HasForeignKey(d => d.BussinesAccount)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__BussinesA__Bussi__71D1E811");
             });
 
             modelBuilder.Entity<Customer>(entity =>

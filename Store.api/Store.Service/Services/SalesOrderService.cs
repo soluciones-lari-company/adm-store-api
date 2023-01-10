@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 [assembly: InternalsVisibleTo("Store.api")]
 namespace Store.Service.Services
@@ -18,21 +19,24 @@ namespace Store.Service.Services
         private readonly ISalesOrderItemRepository _salesOrderItemRepository;
         private readonly ISalesOrderRepository _salesOrderRepository;
         private readonly IPurchaseOrderItemRepository _purchaseOrderRepository;
-        private readonly IBussinesAccountRepository _bussinesAccountRepository;
+        private readonly IBussinesAccountRepository _accountRepository;
+        private readonly IIncomingPaymentRepository _incomingPaymentRepository;
 
         public SalesOrderService(ICustomerRepository customerRepository,
             ILogger<SalesOrderService> logger,
             ISalesOrderItemRepository salesOrderItemRepository,
             ISalesOrderRepository salesOrderRepository,
             IPurchaseOrderItemRepository purchaseOrderRepository,
-            IBussinesAccountRepository bussinesAccountRepository)
+            IBussinesAccountRepository bussinesAccountRepository,
+            IIncomingPaymentRepository incomingPaymentRepository)
         {
             _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _salesOrderItemRepository = salesOrderItemRepository ?? throw new ArgumentNullException(nameof(salesOrderItemRepository));
             _salesOrderRepository = salesOrderRepository ?? throw new ArgumentNullException(nameof(salesOrderRepository));
             _purchaseOrderRepository = purchaseOrderRepository ?? throw new ArgumentNullException(nameof(purchaseOrderRepository));
-            _bussinesAccountRepository = bussinesAccountRepository ?? throw new ArgumentNullException(nameof(bussinesAccountRepository));
+            _accountRepository = bussinesAccountRepository ?? throw new ArgumentNullException(nameof(bussinesAccountRepository));
+            _incomingPaymentRepository = incomingPaymentRepository;
         }
 
         public async Task<int> CreateAsync(SalesOrderCreateModel salesOrderCreate)
@@ -77,7 +81,6 @@ namespace Store.Service.Services
 
             if (orderRegistered == null) throw new NullReferenceException(nameof(orderRegistered));
 
-            await _salesOrderRepository.ChangeStatusAsync(docNum, "C").ConfigureAwait(false);
             var lines = await _salesOrderItemRepository.ListAsync(docNum).ConfigureAwait(false);
 
             lines.ForEach(line =>
@@ -91,30 +94,82 @@ namespace Store.Service.Services
                 Customer = orderRegistered.Customer.Id,
                 DocDate = orderRegistered.DocDate,
                 DocTotal = orderRegistered.DocTotal,
-                DocStatus = orderRegistered.DocStatus,
+                DocStatus = "C",
                 Canceled = true,
                 CandeledDate = DateTime.Now,
                 // TODO: USER-SYS
                 CanceledBy = "USER-SYS",
                 MethodPayment = orderRegistered.MethodPayment,
             });
+
+            if(orderRegistered.MethodPayment == "PUE")
+            {
+                var payment = await _incomingPaymentRepository.GetBySalesOrderAsync(docNum).ConfigureAwait(false);
+                if(payment != null)
+                {
+                    _incomingPaymentRepository.Canceled = true;
+                    _incomingPaymentRepository.CanceledBy = "USER-SYS";
+                    _incomingPaymentRepository.CanceledDate = DateTime.Now;
+
+                    await _incomingPaymentRepository.SaveAsync(AccessData.Enums.SaveAction.Update).ConfigureAwait(false);
+                }
+            }
+
+
         }
 
         public async Task CompleteAsync(int docNum, string paymentMethod)
         {
+            //validate exists order
             var orderRegistered = await _salesOrderRepository.DetailsAsync(docNum).ConfigureAwait(false);
 
-            if (orderRegistered == null) throw new NullReferenceException(nameof(orderRegistered));
+            if (orderRegistered == null)
+            {
+                throw new NullReferenceException("Orden no encontrada");
+            }
+            //validate status
+            if(orderRegistered.DocStatus != "A")
+            {
+                throw new InvalidOperationException("Error, esta orden no puede ser procesada");
+            }
+            //validate default account for icoming payments
+            int accountDefaultId  = 0;
+            if (paymentMethod == "PUE")
+            {
+                var accountDefault = await _accountRepository.GetDefaultAsync().ConfigureAwait(false);
+                if (accountDefault == null)
+                {
+                    throw new NullReferenceException("No existe una cuenta default para pagos recibidos");
+                }
+
+                accountDefaultId = accountDefault.Id;
+            }
 
             await _salesOrderRepository.ChangeStatusAsync(docNum, "F").ConfigureAwait(false);
             await _salesOrderRepository.ChangePaymentMethodAsync(docNum, paymentMethod).ConfigureAwait(false);
+            
+            if (paymentMethod == "PUE")
+            {
+                _incomingPaymentRepository.Customer = orderRegistered.Customer.Id;
+                _incomingPaymentRepository.DocNum = orderRegistered.DocNum;
+                _incomingPaymentRepository.Total = orderRegistered.DocTotal;
+                _incomingPaymentRepository.PaymentDate = orderRegistered.DocDate;
+                _incomingPaymentRepository.BussinesAccount = accountDefaultId;
+                _incomingPaymentRepository.Canceled = false;
+                _incomingPaymentRepository.CanceledDate = null;
+                _incomingPaymentRepository.CanceledBy = "";
+                _incomingPaymentRepository.Comments = "Pago de contado";
+                // TODO service-user
+                _incomingPaymentRepository.CreatedBy = "USER-SYS";
+                _incomingPaymentRepository.CreatedAt = DateTime.Now;
+                _incomingPaymentRepository.UpdatedAt = DateTime.Now;
 
-            //var listDefaultAccount = await _bussinesAccountRepository.GetAsDefault().ConfigureAwait(false);
-            //int idAccountDefaultForPayments = 
-            //if(listDefaultAccount.Count == 0)
-            //{
+                await _incomingPaymentRepository.SaveAsync(AccessData.Enums.SaveAction.Create).ConfigureAwait(false);
 
-            //}
+                _accountRepository.AddHistoryLine(orderRegistered.DocTotal, BussinesAccountHistoryType.entrada, BussinesAccountDocRefType.incommingPayment, _incomingPaymentRepository.Id, $"Pago [{orderRegistered.Customer.FullName}]");
+                _accountRepository.Balance += orderRegistered.DocTotal;
+                await _accountRepository.SaveAsync(AccessData.Enums.SaveAction.Update);
+            }
         }
 
         public async Task DeleteLine(int docNum, string itemCode)

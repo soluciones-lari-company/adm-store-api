@@ -1,5 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using Store.Models.Models.IncomingPayment;
+using Store.Models.Models.SalesOrder;
+using System;
+using System.Collections.Generic;
 
 namespace Store.Models.Models.Customer
 {
@@ -26,6 +28,19 @@ namespace Store.Models.Models.Customer
         public string CreatedBy { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+    }
+    public class CustomerDetailsDashBoardModel
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; } = null!;
+        public string PhoneNumber { get; set; } = null!;
+        public string Email { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public List<IncomingPaymentDetailsModel> Pagos { get; set; }
+        public List<SalesOrderDetailsModel> Compras { get; set; }
+
+
     }
     public class CustomerUpdateModel
     {

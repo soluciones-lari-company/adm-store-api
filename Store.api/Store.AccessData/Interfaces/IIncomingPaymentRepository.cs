@@ -41,6 +41,7 @@ namespace Store.AccessData.Interfaces
         /// <param name="idSalesOrder">id sales order</param>
         /// <returns></returns>
         public Task<IncomingPaymentDetailsModel> GetAsync(int idIncomingPayment, int idSalesOrder);
+        public Task<IncomingPaymentDetailsModel> GetBySalesOrderAsync(int idSalesOrder);
         /// <summary>
         /// list incoming payments
         /// </summary>

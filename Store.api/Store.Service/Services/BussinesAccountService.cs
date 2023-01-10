@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 [assembly: InternalsVisibleTo("Store.api")]
 namespace Store.Service.Services
@@ -27,35 +28,44 @@ namespace Store.Service.Services
             {
                 throw new ArgumentNullException(nameof(bussinesAccountCreate));
             }
+            _bussinesAccountRepository.AccountName = bussinesAccountCreate.AccountName;
+            _bussinesAccountRepository.Comments = bussinesAccountCreate.Comments;
+            _bussinesAccountRepository.DefaultAccount = false;
+            _bussinesAccountRepository.Balance = 0;
+            // TODO service-user
+            _bussinesAccountRepository.CreatedBy = "USER-SYS";
+            _bussinesAccountRepository.CreatedAt = DateTime.Now;
+            _bussinesAccountRepository.UpdatedAt = DateTime.Now;
 
-            var idAccountCreated = await _bussinesAccountRepository.CreateAsync(bussinesAccountCreate.AccountName, bussinesAccountCreate.Comments).ConfigureAwait(false);
+            await _bussinesAccountRepository.SaveAsync();
 
-            return idAccountCreated;
+            return _bussinesAccountRepository.Id;
         }
 
         public async Task<BussinesAccountDetailsModel> DetailsAsync(int idBussinesAccount)
         {
-            if (idBussinesAccount == 0)
-            {
-                return null;
-            }
+            var accountDetails =  await _bussinesAccountRepository.GetAsync(idBussinesAccount).ConfigureAwait(false);
 
-            return await _bussinesAccountRepository.DetailsAsync(idBussinesAccount).ConfigureAwait(false);
+            return accountDetails;
         }
 
         public async Task<List<BussinesAccountHistoryDetailsModel>> GetHistory(int idBussinesAccount)
         {
-            return await _bussinesAccountRepository.GetHistory(idBussinesAccount).ConfigureAwait(false);
+            await _bussinesAccountRepository.GetAsync(idBussinesAccount).ConfigureAwait(false);
+
+            return _bussinesAccountRepository.History;
         }
 
         public async Task<List<BussinesAccountDetailsModel>> ListAsync()
         {
-            return await _bussinesAccountRepository.ListAsync().ConfigureAwait(false);
+            var listAccounts = await _bussinesAccountRepository.ListAsync().ConfigureAwait(false);
+
+            return listAccounts;
         }
 
         public async Task UpdateAsync(BussinesAccountUpdateModel bussinesAccountUpdate)
         {
-            var bussinesAccontRegistered = await _bussinesAccountRepository.DetailsAsync(bussinesAccountUpdate.Id).ConfigureAwait(false);
+            var bussinesAccontRegistered = await _bussinesAccountRepository.GetAsync(bussinesAccountUpdate.Id).ConfigureAwait(false);
 
             if (bussinesAccontRegistered == null)
             {
@@ -64,8 +74,24 @@ namespace Store.Service.Services
 
             if (bussinesAccontRegistered.Comments != bussinesAccountUpdate.Comments || bussinesAccontRegistered.AccountName != bussinesAccountUpdate.AccountName)
             {
-                await _bussinesAccountRepository.UpdateAsync(bussinesAccountUpdate.Id, bussinesAccountUpdate.AccountName, bussinesAccountUpdate.Comments).ConfigureAwait(false);
+                bussinesAccountUpdate.AccountName = bussinesAccountUpdate.AccountName;
+                bussinesAccountUpdate.Comments = bussinesAccountUpdate.Comments;
             }
+
+            await _bussinesAccountRepository.SaveAsync();
+        }
+
+        public async Task AddHistoryLine(int idBussinesAccount, BussinesAccountHistoryType historyType, BussinesAccountDocRefType docRefType, int docRefNum, string comments)
+        {
+            var bussinesAccontRegistered = await _bussinesAccountRepository.GetAsync(idBussinesAccount).ConfigureAwait(false);
+
+            if (bussinesAccontRegistered == null)
+            {
+                throw new ArgumentNullException(nameof(bussinesAccontRegistered));
+            }
+            _bussinesAccountRepository.AddHistoryLine(0, historyType, docRefType, docRefNum, comments);
+            _bussinesAccountRepository.Balance = _bussinesAccountRepository.History.Sum(line => line.Total);
+            await _bussinesAccountRepository.SaveAsync();
         }
     }
 }

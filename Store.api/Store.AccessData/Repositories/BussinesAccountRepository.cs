@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Store.AccessData.Enums;
 
 [assembly: InternalsVisibleTo("Store.Service")]
 namespace Store.AccessData.Repositories
@@ -14,17 +15,141 @@ namespace Store.AccessData.Repositories
     internal class BussinesAccountRepository : IBussinesAccountRepository
     {
         private readonly StoreDC _storeCtx;
+        public int Id => _bussinesAccount.Id;
+        public string AccountName
+        {
+            get { return _bussinesAccount.AccountName; }
+            set { _bussinesAccount.AccountName = value; }
+        }
+        public decimal Balance
+        {
+            get { return _bussinesAccount.Balance; }
+            set { _bussinesAccount.Balance = value; }
+        }
+        public string Comments
+        {
+            get { return _bussinesAccount.Comments; }
+            set { _bussinesAccount.Comments = value; }
+        }
+        public bool DefaultAccount
+        {
+            get { return _bussinesAccount.DefaultAccount; }
+            set { _bussinesAccount.DefaultAccount = value; }
+        }
+        public string CreatedBy
+        {
+            get { return _bussinesAccount.CreatedBy; }
+            set { _bussinesAccount.CreatedBy = value; }
+        }
+        public DateTime CreatedAt
+        {
+            get { return _bussinesAccount.CreatedAt; }
+            set { _bussinesAccount.CreatedAt = value; }
+        }
+        public DateTime UpdatedAt
+        {
+            get { return _bussinesAccount.UpdatedAt; }
+            set { _bussinesAccount.UpdatedAt = value; }
+        }
+        public List<BussinesAccountHistoryDetailsModel> History
+        {
+            get 
+            { 
+                if(_bussinesAccount.BussinesAccountHistories == null)
+                {
+                    return new List<BussinesAccountHistoryDetailsModel>();
+                }
+                else
+                {
+                    var qr_list = from history in _bussinesAccount.BussinesAccountHistories
+                                  select new BussinesAccountHistoryDetailsModel
+                                  {
+                                      Id = history.Id,
+                                      BussinesAccount = history.BussinesAccount,
+                                      Total = history.Total,
+                                      HistoryType = history.HistoryType,
+                                      DocRefType = history.DocRefType,
+                                      DocRefNum = history.DocRefNum,
+                                      Comments = history.Comments,
+                                      CreatedBy = history.CreatedBy,
+                                      CreatedAt = history.CreatedAt,
+                                      UpdatedAt = history.UpdatedAt,
+                                      Cancel = history.Cancel
+                                  };
+                    return qr_list.ToList();
+                }
+            }
+        }
+        private BussinesAccount _bussinesAccount = new BussinesAccount();
 
         public BussinesAccountRepository(StoreDC storeCtx)
         {
             _storeCtx = storeCtx;
         }
 
-        public async Task AddHistoryLine(int idBussinesAccount, decimal total, BussinesAccountHistoryType historyType, BussinesAccountDocRefType docRefType, int docRefNum, string comments)
+        public void Delete()
         {
+            ValidLoadAccount();
+
+            _storeCtx.BussinesAccounts.Remove(_bussinesAccount);
+        }
+
+        public async Task<BussinesAccountDetailsModel> GetAsync(int idIncomingPayment)
+        {
+            _bussinesAccount = await _storeCtx.BussinesAccounts.FirstOrDefaultAsync(account => account.Id == idIncomingPayment).ConfigureAwait(false);
+            if(_bussinesAccount == null)
+            {
+                return null;
+            }
+
+            return new BussinesAccountDetailsModel
+            {
+                Id = _bussinesAccount.Id,
+                AccountName = _bussinesAccount.AccountName,
+                Balance = _bussinesAccount.Balance,
+                Comments = _bussinesAccount.Comments,
+                CreatedBy = _bussinesAccount.CreatedBy,
+                CreatedAt = _bussinesAccount.CreatedAt,
+                UpdatedAt = _bussinesAccount.UpdatedAt,
+            };
+        }
+
+        public async Task<List<BussinesAccountDetailsModel>> ListAsync()
+        {
+            var qr_bussinesAccount = from account in _storeCtx.BussinesAccounts
+                                     select new BussinesAccountDetailsModel
+                                     {
+                                         Id = account.Id,
+                                         AccountName = account.AccountName,
+                                         Balance = account.Balance,
+                                         Comments = account.Comments,
+                                         CreatedBy = account.CreatedBy,
+                                         CreatedAt = account.CreatedAt,
+                                         UpdatedAt = account.UpdatedAt,
+                                     };
+
+            return await qr_bussinesAccount.ToListAsync().ConfigureAwait(false);
+        }
+
+        public async Task SaveAsync(SaveAction action = SaveAction.Create)
+        {
+            if(action == SaveAction.Create)
+            {
+                await _storeCtx.BussinesAccounts.AddAsync(_bussinesAccount);
+            }
+            else
+            {
+                _bussinesAccount.Balance = _bussinesAccount.BussinesAccountHistories.Where(line => line.Cancel == false || line.Cancel == null).Sum(line => line.Total);
+            }
+            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);   
+        }
+
+        public void AddHistoryLine(decimal total, BussinesAccountHistoryType historyType, BussinesAccountDocRefType docRefType, int docRefNum, string comments)
+        {
+            ValidLoadAccount();
             var newHistoryLine = new BussinesAccountHistory
             {
-                BussinesAccount = idBussinesAccount,
+                BussinesAccount = _bussinesAccount.Id,
                 Comments = comments,
                 DocRefNum = docRefNum,
                 DocRefType = MapBussinesAccountDocRefType(docRefType),
@@ -36,8 +161,9 @@ namespace Store.AccessData.Repositories
                 UpdatedAt = DateTime.Now
             };
 
-            await _storeCtx.BussinesAccountHistories.AddAsync(newHistoryLine).ConfigureAwait(false);
-            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
+            _bussinesAccount.BussinesAccountHistories.Add(newHistoryLine);
+            //await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
+
         }
 
         private string MapBussinesAccountHistoryType(BussinesAccountHistoryType historyType)
@@ -66,127 +192,32 @@ namespace Store.AccessData.Repositories
             }
         }
 
-        public async Task<int> CreateAsync(string name, string comments)
+        private void ValidLoadAccount()
         {
-            var newBussinesAccount = new BussinesAccount
+            if (_bussinesAccount == null)
             {
-                AccountName = name,
-                Comments = comments,
-                Balance = 0,
-                // TODO service-user
-                CreatedBy = "USER-SYS",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
-            await _storeCtx.BussinesAccounts.AddAsync(newBussinesAccount).ConfigureAwait(false);
-            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
+                throw new NullReferenceException("The account selected has not been found");
+            }
+       }
 
-            return newBussinesAccount.Id;
-        }
-
-        public async Task<List<BussinesAccountDetailsModel>> ListAsync()
+        public async Task<BussinesAccountDetailsModel> GetDefaultAsync()
         {
-            var qr_bussinesAccount = from account in _storeCtx.BussinesAccounts
-                                     select new BussinesAccountDetailsModel
-                                     {
-                                         Id = account.Id,
-                                         AccountName = account.AccountName,
-                                         Balance = account.Balance,
-                                         Comments = account.Comments,
-                                         CreatedBy = account.CreatedBy,
-                                         CreatedAt = account.CreatedAt,
-                                         UpdatedAt = account.UpdatedAt,
-                                     };
-
-            return await qr_bussinesAccount.ToListAsync().ConfigureAwait(false);
-        }
-
-        public async Task<int> UpdateAsync(int idBussinesAccount, string name, string comments)
-        {
-            var bussinesAccountRegistered = Get(idBussinesAccount);
-
-            bussinesAccountRegistered.AccountName = name;
-            bussinesAccountRegistered.Comments = comments;
-            bussinesAccountRegistered.UpdatedAt = DateTime.Now;
-
-            await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
-
-            return bussinesAccountRegistered.Id;
-        }
-
-        public async Task<List<BussinesAccountHistoryDetailsModel>> GetHistory(int idBussinesAccoun)
-        {
-            var qr_history = from history in _storeCtx.BussinesAccountHistories
-                             where history.BussinesAccount == idBussinesAccoun
-                             select new BussinesAccountHistoryDetailsModel
-                             {
-                                 Id = history.Id,
-                                 BussinesAccount = history.BussinesAccount,
-                                 Total = history.Total,
-                                 HistoryType = history.HistoryType,
-                                 DocRefType = history.DocRefType,
-                                 DocRefNum = history.DocRefNum,
-                                 Comments = history.Comments,
-                                 CreatedBy = history.CreatedBy,
-                                 CreatedAt = history.CreatedAt,
-                                 UpdatedAt = history.UpdatedAt,
-                             };
-
-            return await qr_history.ToListAsync().ConfigureAwait(false);
-        }
-
-        public async Task<BussinesAccountDetailsModel> DetailsAsync(int idBussinesAccount)
-        {
-            var qr_detailsAccount = from account in _storeCtx.BussinesAccounts
-                                    where account.Id == idBussinesAccount
-                                    select new BussinesAccountDetailsModel
-                                    {
-                                        Id = account.Id,
-                                        AccountName = account.AccountName,
-                                        Balance = account.Balance,
-                                        Comments = account.Comments,
-                                        CreatedBy = account.CreatedBy,
-                                        CreatedAt = account.CreatedAt,
-                                        UpdatedAt = account.UpdatedAt,
-                                    };
-
-            return await qr_detailsAccount.FirstOrDefaultAsync().ConfigureAwait(false);
-        }
-
-        public void SetAsDefault(int idBussinesAccount, bool isDefault)
-        {
-            var bussinesAccountRegistered = Get(idBussinesAccount);
-            bussinesAccountRegistered.DefaultAccount = isDefault;
-            _storeCtx.SaveChanges();
-        }
-
-        public async Task<List<BussinesAccountDetailsModel>> GetAsDefault()
-        {
-            var qr_bussinesAccount = from account in _storeCtx.BussinesAccounts where account.DefaultAccount == true
-                                     select new BussinesAccountDetailsModel
-                                     {
-                                         Id = account.Id,
-                                         AccountName = account.AccountName,
-                                         Balance = account.Balance,
-                                         Comments = account.Comments,
-                                         CreatedBy = account.CreatedBy,
-                                         CreatedAt = account.CreatedAt,
-                                         UpdatedAt = account.UpdatedAt,
-                                     };
-
-            return await qr_bussinesAccount.ToListAsync().ConfigureAwait(false);
-        }
-
-        private BussinesAccount Get(int idBussinesAccount)
-        {
-            var bussinesAccountRegistered = _storeCtx.BussinesAccounts.FirstOrDefault(account => account.Id == idBussinesAccount);
-
-            if (bussinesAccountRegistered == null)
+            _bussinesAccount = await _storeCtx.BussinesAccounts.Include(p=> p.BussinesAccountHistories).FirstOrDefaultAsync(account => account.DefaultAccount == true).ConfigureAwait(false);
+            if (_bussinesAccount == null)
             {
-                throw new NullReferenceException(nameof(bussinesAccountRegistered));
+                return null;
             }
 
-            return bussinesAccountRegistered;
+            return new BussinesAccountDetailsModel
+            {
+                Id = _bussinesAccount.Id,
+                AccountName = _bussinesAccount.AccountName,
+                Balance = _bussinesAccount.Balance,
+                Comments = _bussinesAccount.Comments,
+                CreatedBy = _bussinesAccount.CreatedBy,
+                CreatedAt = _bussinesAccount.CreatedAt,
+                UpdatedAt = _bussinesAccount.UpdatedAt,
+            };
         }
     }
 }

@@ -73,6 +73,28 @@ namespace Store.api.Controllers
             }
         }
 
+        [HttpGet("details-customer-general/{customerNumber}")]
+        [ProducesResponseType(typeof(CustomerDetailsDashBoardModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DetailsGeneralAsync(int customerNumber)
+        {
+            try
+            {
+                var customerDetails = await _customerService.GetCompleteAsync(customerNumber).ConfigureAwait(false);
+
+                if (customerDetails == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(customerDetails);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost("edit-customer/{customerNumber}")]
         [ProducesResponseType(typeof(CustomerDetailsModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -16,6 +16,7 @@ namespace Store.Service
             services.AddTransient<ICustomerService, CustomerService>();
             services.AddTransient<ISalesOrderService, SalesOrderService>();
             services.AddTransient<IBussinesAccountService, BussinesAccountService>();
+            services.AddTransient<IIncomingPaymentService, IncomingPaymentService>();
 
             return services;
         }

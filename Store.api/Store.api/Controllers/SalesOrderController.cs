@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Store.api.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class SalesOrderController : ControllerBase
@@ -100,7 +101,7 @@ namespace Store.api.Controllers
                 await _salesOrderService.CancelAsync(docNum).ConfigureAwait(false);
                 return Ok();
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
                 return NotFound();
             }
@@ -108,7 +109,7 @@ namespace Store.api.Controllers
 
         [HttpPost("complete-order/{docNum}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> CompleteOrderAsync(int docNum, string paymentMethod)
         {
             if (string.IsNullOrWhiteSpace(paymentMethod) || !validPaymentMethod.Contains(paymentMethod))
@@ -121,9 +122,9 @@ namespace Store.api.Controllers
                 await _salesOrderService.CompleteAsync(docNum, paymentMethod).ConfigureAwait(false);
                 return Ok();
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 

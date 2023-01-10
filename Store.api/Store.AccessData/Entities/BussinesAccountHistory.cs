@@ -13,9 +13,12 @@ namespace Store.AccessData.Entities
         public string HistoryType { get; set; }
         public string DocRefType { get; set; }
         public int DocRefNum { get; set; }
+        public bool? Cancel { get; set; }
         public string Comments { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public virtual BussinesAccount BussinesAccountNavigation { get; set; }
     }
 }

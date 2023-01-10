@@ -158,11 +158,25 @@ namespace Store.AccessData.Repositories
 
         public async Task SaveAsync(SaveAction action)
         {
-            ValidBeforeAction();
+            
             if(action == SaveAction.Create)
             {
                 _incomingPayment.Id = 0;
                 await _storeCtx.IncommingPayments.AddAsync(_incomingPayment).ConfigureAwait(false);
+            }
+            else
+            {
+                ValidBeforeAction();
+                if (_incomingPayment.Canceled == true)
+                {
+                    var history = _incomingPayment.BussinesAccountNavigation.BussinesAccountHistories.FirstOrDefault(line => line.DocRefNum == _incomingPayment.Id);
+                    if (history != null)
+                    {
+                        history.Cancel = true;
+                    }
+
+                    _incomingPayment.BussinesAccountNavigation.Balance = _incomingPayment.BussinesAccountNavigation.BussinesAccountHistories.Where(line => line.Cancel == false || line.Cancel == null).Sum(line => line.Total);
+                }
             }
 
             await _storeCtx.SaveChangesAsync().ConfigureAwait(false);
@@ -198,14 +212,18 @@ namespace Store.AccessData.Repositories
 
         private async Task<IncomingPaymentDetailsModel> PopulateData(System.Linq.Expressions.Expression<Func<IncommingPayment, bool>> expressions)
         {
-            var paymentRegistered = await _storeCtx.IncommingPayments.FirstOrDefaultAsync(expressions).ConfigureAwait(false);
+            var paymentRegistered = await _storeCtx.IncommingPayments
+                .Include(p=>p.CustomerNavigation)
+                .Include(p => p.BussinesAccountNavigation)
+                .Include(p => p.BussinesAccountNavigation.BussinesAccountHistories)
+                .FirstOrDefaultAsync(expressions).ConfigureAwait(false);
             if (paymentRegistered == null)
             {
                 _incomingPayment = new IncommingPayment();
                 _statusProccess = StatusProccess.NotFound;
                 return null;
             }
-
+            _statusProccess = StatusProccess.Complete;
             _incomingPayment = paymentRegistered;
 
             return new IncomingPaymentDetailsModel
@@ -245,6 +263,11 @@ namespace Store.AccessData.Repositories
                 CreatedAt = paymentRegistered.CreatedAt,
                 UpdatedAt = paymentRegistered.UpdatedAt,
             };
+        }
+
+        public async Task<IncomingPaymentDetailsModel> GetBySalesOrderAsync(int idSalesOrder)
+        {
+            return await PopulateData(payment => payment.DocNum == idSalesOrder).ConfigureAwait(false);
         }
     }
 }

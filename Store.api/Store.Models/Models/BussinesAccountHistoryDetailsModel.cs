@@ -10,6 +10,7 @@ namespace Store.Models.Models
         public string HistoryType { get; set; } = null!;
         public string? DocRefType { get; set; }
         public int DocRefNum { get; set; }
+        public bool? Cancel { get; set; }
         public string? Comments { get; set; }
         public string CreatedBy { get; set; } = null!;
         public DateTime CreatedAt { get; set; }

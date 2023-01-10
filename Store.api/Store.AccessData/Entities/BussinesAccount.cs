@@ -9,6 +9,7 @@ namespace Store.AccessData.Entities
     {
         public BussinesAccount()
         {
+            BussinesAccountHistories = new HashSet<BussinesAccountHistory>();
             IncommingPayments = new HashSet<IncommingPayment>();
         }
 
@@ -21,6 +22,7 @@ namespace Store.AccessData.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public virtual ICollection<BussinesAccountHistory> BussinesAccountHistories { get; set; }
         public virtual ICollection<IncommingPayment> IncommingPayments { get; set; }
     }
 }

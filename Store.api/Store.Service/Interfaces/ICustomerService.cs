@@ -8,6 +8,7 @@ namespace Store.Service.Interfaces
 {
     internal interface ICustomerService
     {
+        public Task<CustomerDetailsDashBoardModel> GetCompleteAsync(int customerNumber);
         public Task<CustomerDetailsModel> GetAsync(int customerNumber);
         public Task<CustomerDetailsModel> GetAsync(string fullName);
         public Task<List<CustomerDetailsModel>> ListAsync();

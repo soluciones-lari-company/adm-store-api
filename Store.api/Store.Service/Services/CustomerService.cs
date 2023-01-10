@@ -13,6 +13,8 @@ namespace Store.Service.Services
     internal class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IIncomingPaymentRepository _incomingPaymentRepository;
+        private readonly ISalesOrderRepository _salesOrderRepository;
         private readonly ILogger<CustomerService> _logger;
         public int Id { get; set; }
         public string FullName { get; set; } = null!;
@@ -25,9 +27,11 @@ namespace Store.Service.Services
         public DateTime CreatedAt { get; internal set; }
         public DateTime UpdatedAt { get; internal set; }
 
-        public CustomerService(ICustomerRepository customerRepository, ILogger<CustomerService> logger)
+        public CustomerService(ICustomerRepository customerRepository, ILogger<CustomerService> logger, IIncomingPaymentRepository incomingPaymentRepository, ISalesOrderRepository salesOrderRepository)
         {
             _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+            _incomingPaymentRepository = incomingPaymentRepository ?? throw new ArgumentNullException(nameof(incomingPaymentRepository));
+            _salesOrderRepository = salesOrderRepository ?? throw new ArgumentNullException(nameof(salesOrderRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -36,6 +40,26 @@ namespace Store.Service.Services
             var customerRegistered = await _customerRepository.DetailsAsync(customerNumber).ConfigureAwait(false);
             if (customerRegistered != null) MapModelToLocal(customerRegistered);
             return customerRegistered;
+        }
+        public async Task<CustomerDetailsDashBoardModel> GetCompleteAsync(int customerNumber)
+        {
+            var customerRegistered = await _customerRepository.DetailsAsync(customerNumber).ConfigureAwait(false);
+            if (customerRegistered == null)
+            {
+                throw new NullReferenceException("Cliente no encontrado");
+            }
+
+            return new CustomerDetailsDashBoardModel
+            {
+                Id = customerRegistered.Id,
+                FullName = customerRegistered.FullName,
+                PhoneNumber = customerRegistered.PhoneNumber,
+                Email = customerRegistered.Email,
+                CreatedAt = customerRegistered.CreatedAt,
+                UpdatedAt = customerRegistered.UpdatedAt,
+                Pagos = await _incomingPaymentRepository.ListAsync(customerNumber).ConfigureAwait(false),
+                Compras = await _salesOrderRepository.List(customerNumber).ConfigureAwait(false)
+            };
         }
 
         public async Task<CustomerDetailsModel?> GetAsync(string fullName)
